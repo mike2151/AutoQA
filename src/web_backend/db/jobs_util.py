@@ -26,11 +26,13 @@ def create_new_job(url, instructions):
                        url TEXT,
                        instructions TEXT,
                        status TEXT,
-                       llm_response TEXT)''')
+                       llm_response TEXT,
+                       selenium_code TEXT,
+                       selenium_output TEXT)''')
 
     # insert a new row into the jobs table
     job_id = random.randint(100000, 9999999)
-    cursor.execute("INSERT INTO jobs (job_id, url, instructions, status, llm_response) VALUES (?, ?, ?, 'pending', '')",
+    cursor.execute("INSERT INTO jobs (job_id, url, instructions, status, llm_response, selenium_code, selenium_output) VALUES (?, ?, ?, 'pending', '', '', '')",
                    (job_id, url, instructions))
     conn.commit()
     conn.close()
@@ -55,7 +57,8 @@ def get_job(job_id):
         'url': job[1],
         'instructions': job[2],
         'status': job[3],
-        'llm_response': job[4] if job[4] else ''
+        'llm_response': job[4] if job[4] else '',
+        'selenium_code': job[5] if job[5] else ''
     }
 
     # return the job as a JSON response
@@ -84,5 +87,19 @@ def update_job_response(job_id, llm_response):
         (llm_response,
          job_id))
 
+    conn.commit()
+    conn.close()
+
+def update_job_selenium_code(job_id, selenium_code):
+    conn = sqlite3.connect('autoqa.db')
+    cursor = conn.cursor()
+    cursor.execute("UPDATE jobs SET selenium_code = ? WHERE job_id = ?", (selenium_code, job_id))
+    conn.commit()
+    conn.close()
+
+def update_selenium_output(job_id, output):
+    conn = sqlite3.connect('autoqa.db')
+    cursor = conn.cursor()
+    cursor.execute("UPDATE jobs SET selenium_output = ? WHERE job_id = ?", (output, job_id))
     conn.commit()
     conn.close()

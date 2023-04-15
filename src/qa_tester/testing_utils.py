@@ -1,5 +1,4 @@
 import re
-import string
 import requests
 import os
 import sys
@@ -8,7 +7,7 @@ import openai
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
-from web_backend.db.jobs_util import JobStatus, update_job_status, get_job, update_job_response  # noqa: E402
+from web_backend.db.jobs_util import JobStatus, update_job_status, get_job, update_job_response, update_job_selenium_code  # noqa: E402
 
 
 def format_url(url):
@@ -22,8 +21,8 @@ def format_url(url):
 
 
 def extract_code_from_chat_gpt(prompt):
-    pattern = r"```python(.+?)```"
-    match = re.search(pattern, string, re.DOTALL)
+    pattern = r"```(?:python)?\n?(.+?)```"
+    match = re.search(pattern, prompt, re.DOTALL)
     if match:
         return match.group(1).strip()
     else:
@@ -42,14 +41,14 @@ def process_request(job_id, url, instructions):
         properly_formed_url = format_url(url)
         response = requests.get(properly_formed_url)
         if response.status_code == 200:
-            html = response.content
+            html = response.text
         else:
             # TODO: add error message to jobs table
             update_job_status(job_id, JobStatus.FAILED)
             return
 
-        prompt = 'Write selenium code to "{}" from the page "{}" for the following HTML code: ```{}```'.format(
-            instructions, url, html)
+        prompt = 'Write selenium code in Python to "{}" from the page "{}" for the following HTML code. After each action take a screenshot and save it to a directory called "screenshots" and in a folder called "{}":: ```{}```'.format(
+            instructions, url, str(job_id), html)
 
         chat = openai.ChatCompletion.create(
             model="gpt-3.5-turbo", messages=[{"role": "assistant", "content": prompt}]
@@ -57,7 +56,7 @@ def process_request(job_id, url, instructions):
         llm_response = chat.choices[0].message['content']
         update_job_response(job_id, llm_response)
         raw_code = extract_code_from_chat_gpt(llm_response)
-        print(raw_code)
+        update_job_selenium_code(job_id, raw_code)
         # once we get selenium response we can set to executing
         update_job_status(job_id, JobStatus.EXECUTING_QA)
 
