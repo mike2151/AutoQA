@@ -22,7 +22,7 @@ Flow:
 ## Tech Stack
 - Python
 - Flask
-
+- Open AI API for Chat GPT 3.5
 
 ## Installation
 1. Clone repository:
@@ -44,3 +44,6 @@ pip install -r requirements.txt
 ```
 python src/web_backend/app.py
 ```
+
+## Usage
+1. After running the web app (see previous section), navigate to [http://127.0.0.1:5000](http://127.0.0.1:5000)
