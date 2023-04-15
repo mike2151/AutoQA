@@ -49,3 +49,23 @@ invoke run
 
 ## Usage
 1. After running the web app (see previous section), navigate to [http://127.0.0.1:5000](http://127.0.0.1:5000)
+2. Enter instructions and a URL and click "Submit"
+3. You will then be brought to the job status page where you can see the status of your job by refreshing. There will be additional information about the job once it is complete such as screenshots of the QA (wait for the completed status)
+
+## How Does The "Tester"/QA Work
+There are two main flows to consider:
+1. The given page is the extent of the QA
+2. The given page is a "landing page" and the QA needs to navigate to other pages
+
+The current branch only supports the first flow. The second flow will be added in the future.
+
+In general though, this is how the QA will progress (for the first flow, just stop the recursive cycle at the given page):
+
+```mermaid
+%% (Diagram made using https://mermaid.live/)
+flowchart TD
+    ClientWebsite["Client Website"] -->|Pulls Landing Page| RequestsLibrary["Requests Library"]
+    RequestsLibrary -->|Get DOM| LLM[LLM Processes DOM To Write Selenium]
+    LLM -->|Navigates Page and Performs Step/Action| Selenium
+    Selenium -->|Gets Next Page's DOM| RequestsLibrary
+```
