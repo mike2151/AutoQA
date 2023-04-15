@@ -6,8 +6,6 @@ import enum
 import random
 import sqlite3
 
-from flask import jsonify
-
 
 class JobStatus(enum.Enum):
     PENDING = 'pending'
@@ -17,7 +15,7 @@ class JobStatus(enum.Enum):
     FAILED = 'failed'
 
 
-def create_new_job(url, instructions):
+def create_new_job(url: str, instructions: str) -> dict:
     conn = sqlite3.connect('autoqa.db')
     cursor = conn.cursor()
     # create the jobs table if it doesn't exist yet
@@ -36,10 +34,10 @@ def create_new_job(url, instructions):
                    (job_id, url, instructions))
     conn.commit()
     conn.close()
-    return jsonify({'job_id': job_id})
+    return {'job_id': str(job_id)}
 
 
-def get_job(job_id):
+def get_job(job_id: str) -> dict:
     conn = sqlite3.connect('autoqa.db')
     cursor = conn.cursor()
 
@@ -49,11 +47,10 @@ def get_job(job_id):
     conn.close()
 
     if not job:
-        return jsonify({'error': 'Job not found'})
+        return {'error': 'Job not found'}
 
-    # create a dictionary to hold the job data
-    job_dict = {
-        'job_id': job[0],
+    return {
+        'job_id': str(job[0]),
         'url': job[1],
         'instructions': job[2],
         'status': job[3],
@@ -61,11 +58,8 @@ def get_job(job_id):
         'selenium_code': job[5] if job[5] else ''
     }
 
-    # return the job as a JSON response
-    return jsonify(job_dict)
 
-
-def update_job_status(job_id, new_status: JobStatus):
+def update_job_status(job_id: str, new_status: JobStatus) -> None:
     conn = sqlite3.connect('autoqa.db')
     c = conn.cursor()
 
@@ -77,7 +71,7 @@ def update_job_status(job_id, new_status: JobStatus):
     conn.close()
 
 
-def update_job_response(job_id, llm_response):
+def update_job_response(job_id: str, llm_response: JobStatus) -> None:
     conn = sqlite3.connect('autoqa.db')
     cursor = conn.cursor()
 
@@ -90,16 +84,22 @@ def update_job_response(job_id, llm_response):
     conn.commit()
     conn.close()
 
-def update_job_selenium_code(job_id, selenium_code):
+
+def update_job_selenium_code(job_id: str, selenium_code: str) -> None:
     conn = sqlite3.connect('autoqa.db')
     cursor = conn.cursor()
-    cursor.execute("UPDATE jobs SET selenium_code = ? WHERE job_id = ?", (selenium_code, job_id))
+    cursor.execute(
+        "UPDATE jobs SET selenium_code = ? WHERE job_id = ?",
+        (selenium_code,
+         job_id))
     conn.commit()
     conn.close()
 
-def update_selenium_output(job_id, output):
+
+def update_selenium_output(job_id: str, output: str) -> None:
     conn = sqlite3.connect('autoqa.db')
     cursor = conn.cursor()
-    cursor.execute("UPDATE jobs SET selenium_output = ? WHERE job_id = ?", (output, job_id))
+    cursor.execute(
+        "UPDATE jobs SET selenium_output = ? WHERE job_id = ?", (output, job_id))
     conn.commit()
     conn.close()

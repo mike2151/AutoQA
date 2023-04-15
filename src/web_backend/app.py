@@ -25,7 +25,7 @@ def hello():
         url = request.form['url']
         instructions = request.form['instructions']
         job_res = create_new_job(url, instructions)
-        job_id = job_res.json['job_id']
+        job_id = job_res['job_id']
         # TODO: start the QA in the background - this should be on a queue but
         # just for MVP purposes
         threading.Thread(
@@ -37,19 +37,27 @@ def hello():
 
 @app.route('/job/<job_id>')
 def job(job_id, methods=['GET']):
-    job_res = get_job(job_id).json
+    job_res = get_job(job_id)
     if 'error' in job_res:
-        return render_template('error.html', error=job.json['error'])
+        return render_template('error.html', error=job_res['error'])
     # get all screenshots for this job
-    screenshot_directory = os.path.join(app.root_path, 'static/screenshots', job_id)
-    png_files = sorted([f for f in os.listdir(screenshot_directory) if f.endswith('.png')])
-    image_urls = [url_for('screenshots', job_id=job_id, filename=f) for f in png_files]
+    screenshot_directory = os.path.join(
+        app.root_path, 'static/screenshots', job_id)
+    png_files = sorted([f for f in os.listdir(
+        screenshot_directory) if f.endswith('.png')])
+    image_urls = [
+        url_for(
+            'screenshots',
+            job_id=job_id,
+            filename=f) for f in png_files]
     return render_template('job.html', job=job_res, image_urls=image_urls)
+
 
 @app.route('/screenshots/<job_id>/<filename>')
 def screenshots(job_id, filename):
     directory = os.path.join(app.root_path, 'static/screenshots', job_id)
     return send_from_directory(directory, filename)
+
 
 if __name__ == '__main__':
     app.run()
