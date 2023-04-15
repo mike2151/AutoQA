@@ -1,9 +1,10 @@
 '''
 The purpose of this file is to provide a set of functions
- that can be used to manage a queue of jobs 
+ that can be used to manage a queue of jobs
 '''
 import queue
 import threading
+
 
 class JobQueue:
     def __init__(self):

@@ -1,5 +1,5 @@
 '''
-Comprehensive integration test for the entire flow of the application. 
+Comprehensive integration test for the entire flow of the application.
 Will mock out Chat GPT. Tests on a basic webserver
 '''
 import multiprocessing
@@ -20,11 +20,12 @@ qa_tester_dir = os.path.join(parent_dir, 'qa_tester')
 sys.path.append(parent_dir)
 sys.path.append(web_backend_dir)
 sys.path.append(qa_tester_dir)
-from web_backend.app import create_app # noqa: E402
-from web_backend.db.jobs_util import JobStatus, get_job # noqa: E402
+from web_backend.app import create_app  # noqa: E402
+from web_backend.db.jobs_util import JobStatus, get_job  # noqa: E402
 
 # needed for OSX
 multiprocessing.set_start_method("fork")
+
 
 class TestE2EFlow(LiveServerTestCase):
     def create_app(self):
@@ -75,7 +76,12 @@ driver.quit()```
             self.assertIsNotNone(test_route_url)
             test_instructions = 'Click the link on the page which takes you to the next page'
 
-            response = self.client.post('/', data={"url": test_route_url, "instructions": test_instructions}, follow_redirects=False)
+            response = self.client.post(
+                '/',
+                data={
+                    "url": test_route_url,
+                    "instructions": test_instructions},
+                follow_redirects=False)
             redirect_url = response.headers['Location']
             self.assertTrue('job/' in redirect_url)
 
@@ -92,8 +98,10 @@ driver.quit()```
             job_res = get_job(job_id)
 
             self.assertEqual(job_res['status'], JobStatus.COMPLETED.value)
+
     def tearDown(self):
         super(TestE2EFlow, self).tearDown()
+
 
 if __name__ == '__main__':
     LiveServerTestCase.main()

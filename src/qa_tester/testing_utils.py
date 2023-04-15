@@ -66,35 +66,38 @@ def get_llm_response(job_id: str, url: str, instructions: str,
     llm_response = chat.choices[0].message['content']
     return llm_response
 
-def execute_selenium(job_id: str, url: str, instructions: str, raw_code: str) -> str:
+
+def execute_selenium(job_id: str, url: str,
+                     instructions: str, raw_code: str) -> str:
     # Redirect stdout to a buffer
+    stdout_buffer = io.StringIO()
+    sys.stdout = stdout_buffer
+
+    # Execute the code
+    try:
+        exec(raw_code)
+    except Exception as e:
+        update_selenium_output(job_id, stdout_buffer.getvalue())
+        sys.stdout = sys.__stdout__
+        print(stdout_buffer.getvalue())
+        # Redirect stdout to a buffer
         stdout_buffer = io.StringIO()
         sys.stdout = stdout_buffer
+        # try one more time
+        llm_response = get_llm_response(
+            job_id, url, instructions, str(e), raw_code)
+        update_job_response(job_id, llm_response)
+        raw_code = extract_code_from_chat_gpt(llm_response)
+        update_job_selenium_code(job_id, raw_code)
+        exec(raw_code)
 
-        # Execute the code
-        try:
-            exec(raw_code)
-        except Exception as e:
-            update_selenium_output(job_id, stdout_buffer.getvalue())
-            sys.stdout = sys.__stdout__
-            print(stdout_buffer.getvalue())
-            # Redirect stdout to a buffer
-            stdout_buffer = io.StringIO()
-            sys.stdout = stdout_buffer
-            # try one more time
-            llm_response = get_llm_response(
-                job_id, url, instructions, str(e), raw_code)
-            update_job_response(job_id, llm_response)
-            raw_code = extract_code_from_chat_gpt(llm_response)
-            update_job_selenium_code(job_id, raw_code)
-            exec(raw_code)
+    # Restore stdout and get the result
+    sys.stdout = sys.__stdout__
+    result = stdout_buffer.getvalue()
+    if len(result) == 0:
+        result = 'Success!'
+    return result
 
-        # Restore stdout and get the result
-        sys.stdout = sys.__stdout__
-        result = stdout_buffer.getvalue()
-        if len(result) == 0:
-            result = 'Success!'
-        return result
 
 def process_request(job_id: str, url: str, instructions: str) -> None:
     job = get_job(job_id)
@@ -110,6 +113,6 @@ def process_request(job_id: str, url: str, instructions: str) -> None:
 
     job = get_job(job_id)
     if job['status'] == JobStatus.EXECUTING_QA.value:
-        result = execute_selenium(job_id, url, instructions, raw_code) 
+        result = execute_selenium(job_id, url, instructions, raw_code)
         update_selenium_output(job_id, result)
         update_job_status(job_id, JobStatus.COMPLETED)

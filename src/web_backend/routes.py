@@ -10,15 +10,17 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 from qa_tester.testing_utils import process_request  # noqa: E402
-from qa_tester.job_queue_utils import JobQueue # noqa: E402
+from qa_tester.job_queue_utils import JobQueue  # noqa: E402
 
 bp = Blueprint('routes', __name__)
 job_queue = JobQueue()
 job_queue.start_workers()
 
+
 @bp.route('/my_route')
 def my_route():
     return 'Hello from my route!'
+
 
 @bp.route('/', methods=['GET', 'POST'])
 def hello() -> Response:
@@ -54,8 +56,12 @@ def job(job_id: str, methods=['GET']) -> Response:
 
 @bp.route('/screenshots/<job_id>/<filename>')
 def screenshots(job_id: str, filename: str) -> Response:
-    directory = os.path.join(current_app.root_path, 'static/screenshots', job_id)
+    directory = os.path.join(
+        current_app.root_path,
+        'static/screenshots',
+        job_id)
     return send_from_directory(directory, filename)
+
 
 def register_test_route(app):
     if app.config.get('TESTING', False):

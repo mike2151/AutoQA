@@ -14,7 +14,7 @@ def lintfix(c) -> None:
 
 @task
 def test(c) -> None:
-    c.run("python -m unittest discover -s src/tests")
+    c.run("pytest")
 
 @task
 def clean(c) -> None:
