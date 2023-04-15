@@ -1,13 +1,14 @@
-import random
 from flask import Flask, redirect, render_template, request, url_for
+
+from db.jobs_util import create_new_job
 
 app = Flask(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def hello():
     if request.method == 'POST':
-        # todo: hook this up to a backend but for now we do a temporary redirect
-        job_id = random.randint(0, 1000000)
+        job_res = create_new_job()
+        job_id = job_res.json['job_id']
         return redirect(url_for('job', job_id=job_id))
     return render_template('index.html')
 

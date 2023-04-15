@@ -23,6 +23,7 @@ Flow:
 - Python
 - Flask
 - Open AI API for Chat GPT 3.5
+- SQLite (mostly for job tracking)
 
 ## Installation
 1. Clone repository:
