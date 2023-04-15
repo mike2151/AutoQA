@@ -9,11 +9,11 @@ import sqlite3
 from flask import jsonify
 
 class JobStatus(enum.Enum):
-    PENDING = 1
-    PLANNING_QA = 2
-    EXECUTING_QA = 3
-    COMPLETED = 4
-    FAILED = 5
+    PENDING = 'pending'
+    PLANNING_QA = 'planning_qa'
+    EXECUTING_QA = 'executing_qa'
+    COMPLETED = 'completed'
+    FAILED = 'failed'
 
 
 def create_new_job(url, instructions):
@@ -62,7 +62,7 @@ def update_job_status(job_id, new_status : JobStatus):
     c = conn.cursor()
     
     # update the status of the job with the given ID
-    c.execute("UPDATE jobs SET status = ? WHERE job_id = ?", (new_status.name, job_id))
+    c.execute("UPDATE jobs SET status = ? WHERE job_id = ?", (new_status.value, job_id))
     
     conn.commit()
     conn.close()

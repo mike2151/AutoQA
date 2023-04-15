@@ -13,6 +13,11 @@ from qa_tester.testing_utils import process_request
 
 app = Flask(__name__)
 
+def process_request_wrapper(job_id,url,instructions): 
+     with app.app_context():
+         process_request(job_id, url, instructions)
+         
+
 @app.route('/', methods=['GET', 'POST'])
 def hello():
     if request.method == 'POST':
@@ -21,7 +26,7 @@ def hello():
         job_res = create_new_job(url, instructions)
         job_id = job_res.json['job_id']
         # TODO: start the QA in the background - this should be on a queue but just for MVP purposes
-        threading.Thread(target=process_request, args=(job_id, url, instructions)).start()
+        threading.Thread(target=process_request_wrapper, args=(job_id, url, instructions)).start()
         return redirect(url_for('job', job_id=job_id))
     return render_template('index.html')
 
