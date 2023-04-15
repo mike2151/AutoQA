@@ -15,3 +15,9 @@ def lintfix(c) -> None:
 @task
 def test(c) -> None:
     c.run("python -m unittest discover -s src/tests")
+
+@task
+def clean(c) -> None:
+    c.run("rm -rf src/web_backend/static/screenshots")
+    c.run("rm ./autoqa.db")
+    c.run("find . -type d -name '__pycache__' -exec rm -r {} +")
