@@ -24,11 +24,12 @@ def create_new_job(url, instructions):
                       (job_id INTEGER PRIMARY KEY,
                        url TEXT,
                        instructions TEXT,
-                       status TEXT)''')
+                       status TEXT,
+                       llm_response TEXT)''')
     
     # insert a new row into the jobs table
     job_id = random.randint(100000, 9999999) 
-    cursor.execute("INSERT INTO jobs (job_id, url, instructions, status) VALUES (?, ?, ?, 'pending')",
+    cursor.execute("INSERT INTO jobs (job_id, url, instructions, status, llm_response) VALUES (?, ?, ?, 'pending', '')",
                    (job_id, url, instructions))
     conn.commit()
     conn.close()
@@ -51,7 +52,8 @@ def get_job(job_id):
         'job_id': job[0],
         'url': job[1],
         'instructions': job[2],
-        'status': job[3]
+        'status': job[3],
+        'llm_response': job[4] if job[4] else ''
     }
     
     # return the job as a JSON response
@@ -64,5 +66,15 @@ def update_job_status(job_id, new_status : JobStatus):
     # update the status of the job with the given ID
     c.execute("UPDATE jobs SET status = ? WHERE job_id = ?", (new_status.value, job_id))
     
+    conn.commit()
+    conn.close()
+
+def update_job_response(job_id, llm_response):
+    conn = sqlite3.connect('autoqa.db')
+    cursor = conn.cursor()
+
+    # update the llm_response column of the job with the given job_id
+    cursor.execute("UPDATE jobs SET llm_response=? WHERE job_id=?", (llm_response, job_id))
+
     conn.commit()
     conn.close()
