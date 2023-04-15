@@ -1,7 +1,7 @@
 from db.jobs_util import create_new_job, get_job
 import os
 import sys
-from flask import Flask, redirect, render_template, request, url_for
+from flask import Flask, redirect, render_template, request, send_from_directory, url_for
 import threading
 
 # TODO: Hack until I figure out how the fuck Python imports work
@@ -40,8 +40,16 @@ def job(job_id, methods=['GET']):
     job_res = get_job(job_id).json
     if 'error' in job_res:
         return render_template('error.html', error=job.json['error'])
-    return render_template('job.html', job=job_res)
+    # get all screenshots for this job
+    screenshot_directory = os.path.join(app.root_path, 'static/screenshots', job_id)
+    png_files = sorted([f for f in os.listdir(screenshot_directory) if f.endswith('.png')])
+    image_urls = [url_for('screenshots', job_id=job_id, filename=f) for f in png_files]
+    return render_template('job.html', job=job_res, image_urls=image_urls)
 
+@app.route('/screenshots/<job_id>/<filename>')
+def screenshots(job_id, filename):
+    directory = os.path.join(app.root_path, 'static/screenshots', job_id)
+    return send_from_directory(directory, filename)
 
 if __name__ == '__main__':
     app.run()

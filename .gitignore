@@ -28,7 +28,7 @@ share/python-wheels/
 MANIFEST
 
 # screenshots
-static/screenshots/
+src/static/screenshots/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

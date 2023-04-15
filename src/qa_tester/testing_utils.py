@@ -30,7 +30,7 @@ def extract_code_from_chat_gpt(prompt):
         return None
 
 def create_screenshot_directory(job_id):
-    directory = f"static/screenshots/{job_id}"
+    directory = f"src/web_backend/static/screenshots/{job_id}"
     os.makedirs(directory, exist_ok=True)
     return directory
 
@@ -53,7 +53,7 @@ def get_llm_response(job_id, url, instructions, error_msg=None, old_code=None):
 
     error_correction = "An error occured the first time you wrote this code: {}. Could you try rewriting the code to avoid the error? This was your original code: {}".format(error_msg, old_code) if error_msg is not None else ''
 
-    prompt = 'Write headless selenium code in Python using Chrome to "{}" from the page "{}" for the following HTML code. After each action take a screenshot and save it to a directory called "static/screenshots" (the screenshots should be named in increasing order ex: 1.png, 2.png, 3.png etc) and in a folder called "{}" (you will need to make the directory). Assume you do not need to specify a path to the webdriver. Please use the `find_element` function instead of functions that start with "find_element_by" as "find_element_by" has been removed. {} HTML Code: ```{}```'.format(
+    prompt = 'Write headless selenium code in Python using Chrome to "{}" from the page "{}" for the following HTML code. After each action take a screenshot and save it to a directory called "src/web_backend/static/screenshots" (the screenshots should be named in increasing order ex: 1.png, 2.png, 3.png etc) and in a folder called "{}" (you will need to make the directory). Assume you do not need to specify a path to the webdriver. Please use the `find_element` function instead of functions that start with "find_element_by" as "find_element_by" has been removed. {} HTML Code: ```{}```'.format(
         instructions, url, str(job_id), error_correction, html)
 
     chat = openai.ChatCompletion.create(

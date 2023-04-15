@@ -12,6 +12,10 @@ Job Progress: {{ job.status }}<br>
 LLM Response (debug only): {{ job.llm_response }}<br>
 Selenium Code (debug only): {{ job.selenium_code }}<br>
 Selenium Output (if any) (debug only): {{ job.selenium_output }}<br>
+<h1>Screenshots (Scroll Down)</h1>
+    {% for image in image_urls %}
+        <img src="{{ image }}" alt="image">
+    {% endfor %}
 </p>
 </body>
 </html>  
