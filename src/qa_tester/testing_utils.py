@@ -8,15 +8,18 @@ import openai
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
-from web_backend.db.jobs_util import JobStatus, update_job_status, get_job, update_job_response
+from web_backend.db.jobs_util import JobStatus, update_job_status, get_job, update_job_response  # noqa: E402
+
 
 def format_url(url):
     if url.startswith('http://') or url.startswith('https://'):
         # URL already starts with http:// or https://, so return it as is
         return url
     else:
-        # URL doesn't start with http:// or https://, so prepend http:// and return it
+        # URL doesn't start with http:// or https://, so prepend http:// and
+        # return it
         return 'http://' + url
+
 
 def extract_code_from_chat_gpt(prompt):
     pattern = r"```python(.+?)```"
@@ -25,6 +28,7 @@ def extract_code_from_chat_gpt(prompt):
         return match.group(1).strip()
     else:
         return None
+
 
 def process_request(job_id, url, instructions):
     job = get_job(job_id).json
@@ -44,7 +48,8 @@ def process_request(job_id, url, instructions):
             update_job_status(job_id, JobStatus.FAILED)
             return
 
-        prompt = 'Write selenium code to "{}" from the page "{}" for the following HTML code: ```{}```'.format(instructions, url, html)
+        prompt = 'Write selenium code to "{}" from the page "{}" for the following HTML code: ```{}```'.format(
+            instructions, url, html)
 
         chat = openai.ChatCompletion.create(
             model="gpt-3.5-turbo", messages=[{"role": "assistant", "content": prompt}]
@@ -55,7 +60,7 @@ def process_request(job_id, url, instructions):
         print(raw_code)
         # once we get selenium response we can set to executing
         update_job_status(job_id, JobStatus.EXECUTING_QA)
-    
+
     job = get_job(job_id).json
-    if job['status'] == JobStatus.EXECUTING_QA.value: 
+    if job['status'] == JobStatus.EXECUTING_QA.value:
         pass

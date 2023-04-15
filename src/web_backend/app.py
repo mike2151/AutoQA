@@ -8,7 +8,7 @@ import threading
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
-from qa_tester.testing_utils import process_request
+from qa_tester.testing_utils import process_request  # noqa: E402
 
 
 app = Flask(__name__)
