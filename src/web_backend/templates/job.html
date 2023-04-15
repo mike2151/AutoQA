@@ -1,8 +1,12 @@
 <html>
 <head>
-<title>Job {{ job_id }}!</title>
+<title>Job {{ job.job_id }}!</title>
 </head>
 <body>
-<h1>Job {{ job_id }}!</h1>
+<h1>Job {{ job.job_id }}!</h1>
+<p>
+Job URL: {{ job.url }}<br>
+Job Instructions: {{ job.instructions }}<br>
+</p>
 </body>
 </html>  

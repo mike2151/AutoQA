@@ -1,6 +1,6 @@
 from flask import Flask, redirect, render_template, request, url_for
 
-from db.jobs_util import create_new_job
+from db.jobs_util import create_new_job, get_job
 
 app = Flask(__name__)
 
@@ -13,8 +13,11 @@ def hello():
     return render_template('index.html')
 
 @app.route('/job/<job_id>')
-def job(job_id):
-    return render_template('job.html', job_id=job_id)
+def job(job_id, methods=['GET']):
+    job_res = get_job(job_id).json
+    if 'error' in job_res:
+        return render_template('error.html', error=job.json['error'])
+    return render_template('job.html', job=job_res)
 
 if __name__ == '__main__':
     app.run()
