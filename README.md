@@ -43,7 +43,7 @@ pip install -r requirements.txt
 
 4. Run Web App:
 ```
-python src/web_backend/app.py
+invoke run
 ```
 
 ## Usage
