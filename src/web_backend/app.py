@@ -7,7 +7,7 @@ app = Flask(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def hello():
     if request.method == 'POST':
-        job_res = create_new_job()
+        job_res = create_new_job(request.form['url'], request.form['instructions'])
         job_id = job_res.json['job_id']
         return redirect(url_for('job', job_id=job_id))
     return render_template('index.html')
