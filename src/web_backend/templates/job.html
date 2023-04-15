@@ -1,9 +1,9 @@
 <html>
 <head>
-<title>Job {{ job.job_id }}!</title>
+<title>Job {{ job.job_id }}</title>
 </head>
 <body>
-<h1>Job {{ job.job_id }}!</h1>
+<h1>Job {{ job.job_id }}</h1>
 <p>
 Job details (refresh the page to get an update)<br>
 Job URL: {{ job.url }}<br>
@@ -11,6 +11,7 @@ Job Instructions: {{ job.instructions }}<br>
 Job Progress: {{ job.status }}<br>
 LLM Response (debug only): {{ job.llm_response }}<br>
 Selenium Code (debug only): {{ job.selenium_code }}<br>
+Selenium Output (if any) (debug only): {{ job.selenium_output }}<br>
 </p>
 </body>
 </html>  

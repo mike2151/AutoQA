@@ -26,6 +26,7 @@ Flow:
 - SQLite (mostly for job tracking)
 
 ## Installation
+0. You will need to have a web driver installed (Chrome should do if you have already)
 1. Clone repository:
 ```
 git clone https://github.com/mike2151/AutoQA.git
