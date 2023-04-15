@@ -69,3 +69,9 @@ flowchart TD
     LLM -->|Navigates Page and Performs Step/Action| Selenium
     Selenium -->|Gets Next Page's DOM| RequestsLibrary
 ```
+
+## Testing
+You can run unit/integration tests with:
+```
+invoke test
+```

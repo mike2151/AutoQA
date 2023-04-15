@@ -11,3 +11,7 @@ def lint(c) -> None:
 @task
 def lintfix(c) -> None:
     c.run("autopep8 --in-place --recursive --aggressive ./src/")
+
+@task
+def test(c) -> None:
+    c.run("python -m unittest discover -s src/tests")

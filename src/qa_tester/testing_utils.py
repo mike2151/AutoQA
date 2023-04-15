@@ -66,22 +66,8 @@ def get_llm_response(job_id: str, url: str, instructions: str,
     llm_response = chat.choices[0].message['content']
     return llm_response
 
-
-def process_request(job_id: str, url: str, instructions: str) -> None:
-    job = get_job(job_id)
-    if job['status'] == JobStatus.PENDING.value:
-        update_job_status(job_id, JobStatus.PLANNING_QA)
-
-        llm_response = get_llm_response(job_id, url, instructions)
-        update_job_response(job_id, llm_response)
-        raw_code = extract_code_from_chat_gpt(llm_response)
-        update_job_selenium_code(job_id, raw_code)
-        # once we get selenium response we can set to executing
-        update_job_status(job_id, JobStatus.EXECUTING_QA)
-
-    job = get_job(job_id)
-    if job['status'] == JobStatus.EXECUTING_QA.value:
-        # Redirect stdout to a buffer
+def execute_selenium(job_id: str, url: str, instructions: str, raw_code: str) -> str:
+    # Redirect stdout to a buffer
         stdout_buffer = io.StringIO()
         sys.stdout = stdout_buffer
 
@@ -108,5 +94,22 @@ def process_request(job_id: str, url: str, instructions: str) -> None:
         result = stdout_buffer.getvalue()
         if len(result) == 0:
             result = 'Success!'
+        return result
+
+def process_request(job_id: str, url: str, instructions: str) -> None:
+    job = get_job(job_id)
+    if job['status'] == JobStatus.PENDING.value:
+        update_job_status(job_id, JobStatus.PLANNING_QA)
+
+        llm_response = get_llm_response(job_id, url, instructions)
+        update_job_response(job_id, llm_response)
+        raw_code = extract_code_from_chat_gpt(llm_response)
+        update_job_selenium_code(job_id, raw_code)
+        # once we get selenium response we can set to executing
+        update_job_status(job_id, JobStatus.EXECUTING_QA)
+
+    job = get_job(job_id)
+    if job['status'] == JobStatus.EXECUTING_QA.value:
+        result = execute_selenium(job_id, url, instructions, raw_code) 
         update_selenium_output(job_id, result)
         update_job_status(job_id, JobStatus.COMPLETED)
