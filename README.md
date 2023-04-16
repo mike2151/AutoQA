@@ -75,3 +75,7 @@ You can run unit/integration tests with:
 ```
 invoke test
 ```
+
+## Screenshots:
+![Screenshot](./screenshot_1.png){:height="600px" width="800px"}
+![Screenshot](./screenshot_2.png){:height="600px" width="800px"}
