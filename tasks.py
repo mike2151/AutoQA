@@ -11,6 +11,7 @@ def lint(c) -> None:
 @task
 def lintfix(c) -> None:
     c.run("autopep8 --in-place --recursive --aggressive ./src/")
+    c.run("python3 tidy_html.py ./src")
 
 @task
 def test(c) -> None:
