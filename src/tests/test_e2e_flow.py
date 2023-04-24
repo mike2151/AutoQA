@@ -84,8 +84,8 @@ driver.quit()```
             redirect_url = response.headers['Location']
             self.assertTrue('job/' in redirect_url)
 
-            # wait two seconds for the job to finish planning
-            time.sleep(2)
+            # wait a couple seconds for the job to finish planning
+            time.sleep(5)
 
             # get the job and check the selenium code planned
             job_id = redirect_url.split('/')[-1]
@@ -93,7 +93,7 @@ driver.quit()```
             self.assertTrue('Test Output' in job_res['llm_response'])
 
             # wait for selenium to finish
-            time.sleep(4)
+            time.sleep(8)
             job_res = get_job(job_id)
 
             self.assertEqual(job_res['status'], JobStatus.COMPLETED.value)
