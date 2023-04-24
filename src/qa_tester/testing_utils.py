@@ -37,7 +37,7 @@ def create_screenshot_directory(job_id: str) -> None:
 
 def get_llm_response(job_id: str, url: str, instructions: str,
                      error_msg: str = None, old_code: str = None) -> str:
-    # chat gpt sometimes does not do this
+    # make dir if it doesn't exist already
     create_screenshot_directory(job_id)
     openai.organization = os.environ.get("OPENAI_ORG")
     openai.api_key =  os.environ.get("OPENAI_API_KEY")
