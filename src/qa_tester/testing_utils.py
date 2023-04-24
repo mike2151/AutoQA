@@ -39,8 +39,8 @@ def get_llm_response(job_id: str, url: str, instructions: str,
                      error_msg: str = None, old_code: str = None) -> str:
     # chat gpt sometimes does not do this
     create_screenshot_directory(job_id)
-    openai.organization = os.environ.get('OPENAI_ORG')
-    openai.api_key =  os.environ.get('OPENAI_API_KEY')
+    openai.organization = os.environ.get("OPENAI_ORG")
+    openai.api_key =  os.environ.get("OPENAI_API_KEY")
 
     # TODO: (we will assume that we have one iteration of QA for now)
     properly_formed_url = format_url(url)
