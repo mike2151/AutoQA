@@ -5,7 +5,6 @@ import sys
 from flask import Flask, redirect, render_template, request, send_from_directory, url_for
 from flask.wrappers import Response
 
-# TODO: Hack until I figure out how the fuck Python imports work
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)

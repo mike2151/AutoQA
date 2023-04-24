@@ -4,7 +4,6 @@ import requests
 import os
 import sys
 import openai
-# TODO: Hack until I figure out how the fuck Python imports work
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
@@ -40,9 +39,8 @@ def get_llm_response(job_id: str, url: str, instructions: str,
                      error_msg: str = None, old_code: str = None) -> str:
     # chat gpt sometimes does not do this
     create_screenshot_directory(job_id)
-    # TODO: secure this
-    openai.organization = os.environ.get("OPENAI_ORG")
-    openai.api_key = os.environ.get("OPENAI_API_KEY")
+    openai.organization = os.environ.get('OPENAI_ORG')
+    openai.api_key =  os.environ.get('OPENAI_API_KEY')
 
     # TODO: (we will assume that we have one iteration of QA for now)
     properly_formed_url = format_url(url)

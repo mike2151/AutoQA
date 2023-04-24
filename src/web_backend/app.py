@@ -5,7 +5,6 @@ from flask import Flask
 from routes import bp
 from web_backend.routes import register_test_route
 
-# TODO: Hack until I figure out how the fuck Python imports work
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)

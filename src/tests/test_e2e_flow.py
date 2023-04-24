@@ -12,7 +12,6 @@ from flask import url_for
 from werkzeug.test import Client
 from flask_testing import LiveServerTestCase
 
-# TODO: Hack until I figure out how the fuck Python imports work
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
 web_backend_dir = os.path.join(parent_dir, 'web_backend')
